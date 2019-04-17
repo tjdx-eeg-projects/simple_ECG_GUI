@@ -6,29 +6,12 @@ from wfdb import processing
 
 
 def read_ecg(file_path):
-    #读取ecg信号
+    #read ecg
     record = io.rdrecord(file_path)
     return record
-
-'''
-def plot_ecg(file_path, channels = 0, sampfrom=0, sampto=None):
-    #画出指定channel的一段样本从sampfrom到sampto的ecg图像
-    record_to_plot = io.rdrecord(file_path, channels = [channels], sampfrom=sampfrom, sampto=sampto)
-    fig = plot.plot_wfdb(record=record_to_plot,
-                time_units='seconds', return_fig = True)
-    return fig
-'''
                
 def compute_rr_interval(record, channels = 0):
-    #计算rr间期，返回包含所有间期的一维numpy数组
     qrs_inds = processing.xqrs_detect(sig=record.p_signal[:,channels], fs=record.fs)
-    '''
-    i = 1
-    rr_interval = []
-    while i < qrs_inds.size:
-        rr_interval.append((qrs_inds[i] - qrs_inds[i-1]) / record.fs)
-        i = i+1
-    '''
     rr_intervals = processing.calc_rr(qrs_inds, fs=record.fs, rr_units='seconds')
     return rr_intervals
 
